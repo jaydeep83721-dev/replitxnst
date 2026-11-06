@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#101d31" />
+  <meta name="description" content="Treasureport: explore a voxel harbor and discover the four secrets of smart money choices." />
+  <title>Treasureport · Crystal Harbour</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main id="app">
+    <canvas id="world" aria-label="3D voxel Treasureport game world"></canvas>
+    <div class="world-tint" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <div class="brand" aria-label="Treasureport">
+        <div class="brand-icon">✦</div>
+        <div><strong>TREASUREPORT</strong><span>CRYSTAL HARBOUR <i>•</i> CHAPTER ONE</span></div>
+      </div>
+      <div class="top-status">
+        <span class="live-pill"><span class="live-dot"></span> EXPLORER MODE</span>
+        <div class="money-pill"><span>◈</span><div><small>YOUR GOAL</small><b id="money">₹4,000 / ₹30,000</b></div></div>
+        <button id="resetBtn" class="icon-button" type="button" title="Restart progress" aria-label="Restart progress">↻</button>
+      </div>
+    </header>
+
+    <aside class="left-panel">
+      <div class="eyebrow"><span class="tiny-star">✧</span> YOUR JOURNEY</div>
+      <h1>Four guilds.<br /><em>One great adventure.</em></h1>
+      <p>Help Crystal Harbour thrive. Explore the island, enter each guild, and light all four crystals.</p>
+      <div class="progress-heading"><span>CHAPTER PROGRESS</span><b id="progressFraction">0 / 4</b></div>
+      <div class="progress-track"><div id="progressFill"></div></div>
+      <div class="crystal-row" aria-label="Four collectible crystals">
+        <div class="crystal" data-pillar="plan" title="Plan & Budget">◆</div>
+        <div class="crystal" data-pillar="save" title="Save & Manage">◆</div>
+        <div class="crystal" data-pillar="invest" title="Invest Wisely">◆</div>
+        <div class="crystal" data-pillar="safe" title="Stay Safe">◆</div>
+      </div>
+      <div class="wellbeing"><div><span class="mood-face" id="moodFace">☺</span><div><strong>Wellbeing</strong><small>Balance matters, too</small></div></div><b id="happyValue">70</b></div>
+      <div class="happiness-track"><div id="happinessFill"></div></div>
+    </aside>
+
+    <aside class="right-panel" aria-label="Guild locations">
+      <div class="quest-heading"><div><div class="eyebrow">✦ YOUR DESTINATIONS</div><h2>Explore the guilds</h2></div><span class="quest-count">04</span></div>
+      <button class="quest-card" data-travel="plan" type="button"><span class="quest-icon workshop">⚒</span><span><b>Builder's Workshop</b><small>PLAN & BUDGET</small></span><span class="quest-check" data-check="plan">↗</span></button>
+      <button class="quest-card" data-travel="save" type="button"><span class="quest-icon bakery">▣</span><span><b>Harbour Bakery</b><small>SAVE & MANAGE</small></span><span class="quest-check" data-check="save">↗</span></button>
+      <button class="quest-card" data-travel="invest" type="button"><span class="quest-icon merchant">◈</span><span><b>Merchant Guild</b><small>INVESTING JUDGEMENT</small></span><span class="quest-check" data-check="invest">↗</span></button>
+      <button class="quest-card" data-travel="safe" type="button"><span class="quest-icon watch">⬡</span><span><b>Guardian's Watch</b><small>SPOT THE SCAM</small></span><span class="quest-check" data-check="safe">↗</span></button>
+      <div class="quest-hint">Select a guild to walk there, or roam the island freely.</div>
+      <button id="restBtn" class="rest-button" type="button">☕ &nbsp;Take a break &nbsp;<span>+5 wellbeing</span></button>
+    </aside>
+
+    <div id="mapLabelPlan" class="map-label" data-travel="plan"><span>⚒</span> WORKSHOP</div>
+    <div id="mapLabelSave" class="map-label" data-travel="save"><span>▣</span> BAKERY</div>
+    <div id="mapLabelInvest" class="map-label" data-travel="invest"><span>◈</span> MERCHANT</div>
+    <div id="mapLabelSafe" class="map-label" data-travel="safe"><span>⬡</span> GUARD</div>
+    <div id="mapLabelGate" class="map-label gate-label" data-travel="gate"><span>✦</span> CRYSTAL GATE</div>
+
+    <div class="bottom-ui">
+      <div class="controls-note"><span class="key-group"><kbd>W</kbd><span><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span></span><div><b>MOVE AROUND</b><small>WASD / arrow keys · Click ground to walk<br />Drag to orbit · Scroll to zoom · E to enter</small></div></div>
+      <div id="nearPrompt" class="near-prompt" hidden>Press <kbd>E</kbd> to enter</div>
+      <div class="map-tools"><button class="round-control" id="rotateLeft" type="button" title="Rotate left">⟲</button><button class="round-control" id="zoomOut" type="button" title="Zoom out">−</button><button class="round-control" id="zoomIn" type="button" title="Zoom in">+</button><button class="round-control" id="rotateRight" type="button" title="Rotate right">⟳</button></div>
+    </div>
+    <div class="touch-controls" aria-label="Movement controls"><button type="button" data-dir="up">▲</button><div><button type="button" data-dir="left">◀</button><button type="button" data-dir="down">▼</button><button type="button" data-dir="right">▶</button></div></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <section class="overlay" id="welcome" aria-labelledby="welcomeTitle">
+      <div class="welcome-frame">
+        <div class="welcome-visual" role="img" aria-label="Voxel-style Treasureport harbour concept art"><div class="welcome-visual-text"><div class="sparkle-line">✧ YOUR ADVENTURE BEGINS ✧</div><h2>TREASURE<br /><span>PORT</span></h2><p>THE CRYSTAL HARBOUR</p></div></div>
+        <div class="welcome-content"><span class="eyebrow accent">✦ CHOOSE YOUR EXPLORER</span><h2 id="welcomeTitle">A whole new world<br />is waiting for you.</h2><p class="welcome-desc">Pick your character, step into the harbour, and learn money skills through little adventures. Your choices shape your story.</p>
+          <div class="avatar-select" role="group" aria-label="Select your avatar"><button class="avatar-option active" data-avatar="boy" type="button" aria-pressed="true"><div class="avatar-art boy-art"><div class="hair"></div><div class="face"><i></i><i></i></div><div class="body"></div><div class="legs"></div></div><strong>Explorer Finn</strong><small>BOY AVATAR</small><span class="avatar-tick">✓</span></button><button class="avatar-option" data-avatar="girl" type="button" aria-pressed="false"><div class="avatar-art girl-art"><div class="hair"></div><div class="face"><i></i><i></i></div><div class="body"></div><div class="legs"></div></div><strong>Explorer Mira</strong><small>GIRL AVATAR</small><span class="avatar-tick">✓</span></button></div>
+          <label class="name-label" for="playerName">YOUR EXPLORER NAME <span>(OPTIONAL)</span></label><input id="playerName" type="text" maxlength="20" placeholder="What should we call you?" autocomplete="off" /><button class="start-button" type="button" id="startBtn">LET'S EXPLORE <span>↗</span></button><small class="privacy-note">✧ No account needed. Progress stays on this device.</small>
+        </div>
+      </div>
+    </section>
+
+    <section class="overlay hidden" id="gameOverlay" aria-labelledby="gameTitle"><div class="game-dialog"><button class="close-modal" id="closeGame" type="button" title="Leave activity">×</button><div class="game-header"><div class="eyebrow" id="gameEyebrow">GUILD CHALLENGE</div><h2 id="gameTitle"></h2><p id="gameIntro"></p></div><div id="gameBody"></div></div></section>
+    <section class="overlay hidden" id="confirmOverlay" aria-labelledby="confirmTitle"><div class="confirm-dialog"><div class="eyebrow">NEW BEGINNING</div><h2 id="confirmTitle">Restart your adventure?</h2><p>This will clear your crystals, wellbeing, and quest results on this device.</p><div class="confirm-actions"><button id="cancelReset" type="button" class="secondary-button">KEEP PLAYING</button><button id="confirmReset" type="button" class="danger-button">RESET GAME</button></div></div></section>
+    <div class="unsupported hidden" id="unsupported"><h2>3D graphics unavailable</h2><p>Your browser needs WebGL enabled to show the world. Try updating your browser or enabling hardware acceleration.</p></div>
+  </main>
+</body>
+</html>
